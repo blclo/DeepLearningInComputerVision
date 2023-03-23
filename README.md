@@ -54,3 +54,12 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
     │       └── train_model.py
     │
     └── requirements.txt 
+
+## Accessing the DTU Cluster
+1. Open your terminal and write:
+```
+ssh userid@login1.hpc.dtu.dk
+```
+2. Login with your credentials
+3. Activate your Conda env
+4. Start up an interactive node using ```voltash```
