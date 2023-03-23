@@ -1,4 +1,11 @@
-from src.models.train_model import *
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import torchvision.transforms as transforms
+
+from typing import Optional
 
 class Network(nn.Module):
     def __init__(self):
@@ -26,7 +33,7 @@ class Network(nn.Module):
     
     def forward(self, x):
         x = self.convolutional(x)
-        #reshape x so it becomes flat, except for the first dimension (which is the minibatch)
+        # reshape x so it becomes flat, except for the first dimension (which is the minibatch)
         x = x.view(x.size(0), -1)
         x = self.fully_connected(x)
         return x

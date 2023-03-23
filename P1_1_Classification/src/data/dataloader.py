@@ -15,13 +15,14 @@ class HotDog_NotHotdog(Dataset):
         train,
         transform=None,
         size=128,
-        data_path: str = 'data/hotdog-not-hotdog',
+        data_path = r'C:\Users\carol\deep_learning_in_cv\P1_1_Classification\src\data\hotdog-nothotdog\hotdog-nothotdog',
     ):
         # initialization
         self.transform = transform
         self.train = train
-
+        
         data_path = os.path.join(data_path, 'train' if train else 'test')
+        print(data_path)
         # Create as Path-object
         #self.data_path = Path(data_path)
 
