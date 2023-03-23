@@ -20,9 +20,9 @@ if __name__ == '__main__':
     batch_size = 64
     # -----------------  Load dataset  -----------------
     trainset = HotDog_NotHotdog(train=True)
-    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=3)
+    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
     testset = HotDog_NotHotdog(train=False)
-    test_loader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=3)
+    test_loader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=0)
     
     # -----------------  Split Dataset  -----------------
     '''

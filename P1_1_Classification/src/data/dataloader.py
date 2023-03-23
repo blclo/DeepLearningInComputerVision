@@ -39,6 +39,7 @@ class HotDog_NotHotdog(Dataset):
                                       transforms.RandomHorizontalFlip(),
                                       transforms.RandomRotation(30),
                                       transforms.ToTensor(),
+                                      transforms.Resize((299, 299))
                                      ])
         
     def __len__(self):

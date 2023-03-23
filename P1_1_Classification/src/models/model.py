@@ -12,21 +12,21 @@ class Network(nn.Module):
         super(Network, self).__init__()
         self.convolutional = nn.Sequential (
             # two cnn with 8 features
-            nn.Conv2d(1, 8, kernel_size=3, padding=1),
+            nn.Conv2d(3, 64, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(8, 8, kernel_size=3, padding=1),
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
             nn.ReLU(),
             # max pooling 2x2
-            nn.MaxPool2d(kernel_size=2, stride=2),
+            #nn.MaxPool2d(kernel_size=2, stride=2),
             # two cnn with 16 features
-            nn.Conv2d(8, 16, kernel_size=3, padding=1),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(16, 16, kernel_size=3, padding=1),
+            nn.Conv2d(128, 64, kernel_size=3, padding=1),
             nn.ReLU(),
         )
 
         self.fully_connected = nn.Sequential(
-                nn.Linear(14*14*16, 500),
+                nn.Linear(299*299*64, 500),
                 nn.ReLU(),
                 nn.Linear(500, 10),
                 nn.Softmax(dim=1))
