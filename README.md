@@ -32,7 +32,7 @@ If running on GPU with CUDA 11.6 install Pytorch with the following command:
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
 
-## Project Organization
+## Project Organization P1_1_Classification
 ------------
 
     ├── README.md          <- The top-level README for developers using this project.
