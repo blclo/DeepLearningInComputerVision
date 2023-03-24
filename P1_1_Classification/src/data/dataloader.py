@@ -15,7 +15,7 @@ class HotDog_NotHotdog(Dataset):
         train,
         transform=None,
         size=128,
-        data_path = r'C:\Users\carol\deep_learning_in_cv\P1_1_Classification\src\data\hotdog-nothotdog\hotdog-nothotdog',
+        data_path = 'src\data\hotdog-nothotdog\hotdog-nothotdog',
     ):
         # initialization
         self.transform = transform

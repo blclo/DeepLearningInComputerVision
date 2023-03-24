@@ -88,3 +88,9 @@ ssh USER@l1.hpc.dtu.dk -g -L8080:n-62-20-1:40001 -N
 ```python3 -m venv NAME_VENV```
 4. You can now activate your environment wherever using:
 ```source NAME_VENV/bin/activate```
+
+## Submitting a job to the HPC DTU's Cluster
+Once you have this text file (the job script, let us call it submit.sh), you must submit it by typing in a terminal the command (Source: https://www.hpc.dtu.dk/?page_id=1416):
+```bsub < submit.sh```
+Job Statistics:
+```bstat```
