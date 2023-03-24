@@ -79,3 +79,13 @@ ssh USER@l1.hpc.dtu.dk -g -L8080:n-62-20-1:40001 -N
 ```
 4. Enter your credentials
 5. It will look as if nothing happened, but open your browser and write ```http://localhost:8080/tree?```
+
+## Setting up a venv
+1. Create a directory in the HPC where you want your venvs to be stored
+```mkdir venvs```
+2. Load the python module:
+```module load python3/3.10.7```
+3. Create the venv:
+```python3 -m venv NAME_VENV```
+4. You can now activate your environment wherever using:
+```source NAME_VENV/bin/activate```
