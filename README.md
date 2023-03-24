@@ -36,8 +36,6 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
 ------------
 
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   └── catalan_data_course            <- The original, immutable data dump.
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
@@ -45,7 +43,8 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
     │   │
     │   ├── data           <- Scripts to download or generate data
     │   |   ├── __init__.py
-    │   │   └── dataloader.py
+    │   │   ├── dataloader.py
+    │   |   └── hotdog-nothotdog <- The original data dump.
     │   │
     │   └── models         <- Scripts to train models and then use trained models to make
     │       │                 predictions
