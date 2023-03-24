@@ -63,3 +63,19 @@ ssh userid@login1.hpc.dtu.dk
 2. Login with your credentials
 3. Activate your Conda env
 4. Start up an interactive node using ```voltash```
+
+## Setting up your jupyter notebook
+1. Start it inside your interactive node
+```
+jupyter notebook --no-browser --port=40000 --ip=$HOSTNAME
+```
+2. Copy the values in your url that look like this:
+```
+n-62-20-1:40001
+```
+3. Open another terminal and write. Please note substitute USER by your username and make sure the above line is included after L8080:
+```
+ssh USER@l1.hpc.dtu.dk -g -L8080:n-62-20-1:40001 -N
+```
+4. Enter your credentials
+5. It will look as if nothing happened, but open your browser and write ```http://localhost:8080/tree?```
