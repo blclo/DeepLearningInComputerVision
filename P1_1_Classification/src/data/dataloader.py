@@ -15,7 +15,7 @@ class HotDog_NotHotdog(Dataset):
         train,
         transform=None,
         size=128,
-        data_path = 'src\data\hotdog-nothotdog\hotdog-nothotdog',
+        data_path = r'/work3/s212725/hotdogProject/data',
     ):
         # initialization
         self.transform = transform
@@ -34,13 +34,8 @@ class HotDog_NotHotdog(Dataset):
         image_classes.sort()
         self.name_to_label = {c: id for id, c in enumerate(image_classes)}
         self.image_paths = glob.glob(data_path + '/*/*.jpg')
-        self.convert_tensor = transforms.Compose([transforms.ColorJitter(),
-                                      transforms.RandomPerspective(),
-                                      transforms.RandomHorizontalFlip(),
-                                      transforms.RandomRotation(30),
-                                      transforms.ToTensor(),
-                                      transforms.Resize((299, 299))
-                                     ])
+        self.convert_tensor = transforms.Compose([transforms.ToTensor(),
+                                                  transforms.Resize((size, size))])
         
     def __len__(self):
         'Returns the total number of samples'

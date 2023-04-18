@@ -4,36 +4,39 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchvision.transforms as transforms
+from typing import Tuple
+from torchvision.models import resnet18, resnet50, inception_v3
+from torchvision.models import ResNet18_Weights, ResNet50_Weights
 
 from typing import Optional
 
-class Network(nn.Module):
-    def __init__(self):
-        super(Network, self).__init__()
-        self.convolutional = nn.Sequential (
-            # two cnn with 8 features
-            nn.Conv2d(3, 64, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
-            nn.ReLU(),
-            # max pooling 2x2
-            #nn.MaxPool2d(kernel_size=2, stride=2),
-            # two cnn with 16 features
-            nn.Conv2d(128, 128, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(128, 64, kernel_size=3, padding=1),
-            nn.ReLU(),
-        )
+def get_model(model_name: str, lr: float, device):
+    if model_name not in ['ResNet18', 'ResNet50', 'Inception3']:
+        raise NotImplementedError(f"No such model class exists... {(model_name)}")
 
-        self.fully_connected = nn.Sequential(
-                nn.Linear(299*299*64, 500),
-                nn.ReLU(),
-                nn.Linear(500, 10),
-                nn.Softmax(dim=1))
+    if model_name == 'ResNet50':
+        model = resnet50(weights=ResNet50_Weights.DEFAULT).to(device)
     
-    def forward(self, x):
-        x = self.convolutional(x)
-        # reshape x so it becomes flat, except for the first dimension (which is the minibatch)
-        x = x.view(x.size(0), -1)
-        x = self.fully_connected(x)
-        return x
+    elif model_name == "ResNet18":
+        model = resnet18(weights=ResNet18_Weights.DEFAULT).to(device)
+
+    else:
+        model = inception_v3(pretrained=True)
+
+    # Freeze all layers except the last two blocks
+    for name, param in model.named_parameters():
+            param.requires_grad = False
+
+    num_ftrs = model.fc.in_features
+    # Define output layers
+    model.fc = nn.Sequential(
+        nn.Linear(num_ftrs, 2),
+        nn.LogSoftmax(dim=1)
+    ).to(device)
+        
+    # Define loss criterion + optimizer --> NLLLoss used with LogSoftmax for stability reasons
+    criterion = nn.NLLLoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+        
+    return model, criterion, optimizer, scheduler
