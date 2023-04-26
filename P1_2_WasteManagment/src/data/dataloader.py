@@ -4,7 +4,7 @@ import torch
 import numpy as np
 import torchvision.transforms as transforms
 
-from PIL import Image
+from PIL import Image, ExifTags
 from torch.utils.data import BatchSampler
 from torch.utils.data import Dataset, DataLoader
 import json
@@ -97,7 +97,23 @@ class TacoDataset(Dataset):
         image_id = self.images[idx]["id"]
         image_path = self.dataset_path + '/' + self.images[idx]['file_name']
 
-        image = Image.open(image_path).convert('RGB')
+        image = Image.open(image_path)
+        # .convert('RGB') Maybe i need it later - for now it works without it
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+
+        if image._getexif():
+            exif = dict(image._getexif().items())
+            # Rotate portrait and upside down images if necessary
+            if orientation in exif:
+                if exif[orientation] == 3:
+                    image = image.rotate(180,expand=True)
+                if exif[orientation] == 6:
+                    image = image.rotate(270,expand=True)
+                if exif[orientation] == 8:
+                    image = image.rotate(90,expand=True)
+        #image = np.asarray(I)
 
         # Apply the transformation pipeline if it exists
         if self.transform:
@@ -135,6 +151,7 @@ class TacoDataset(Dataset):
         target['area'] = areas
         target['iscrowd'] = iscrowd
         target['image_id'] = torch.tensor([image_id])
+        target['image_path'] = image_path
 
         return image, target
 
