@@ -141,14 +141,19 @@ if __name__ == '__main__':
                 gt_resized = tuple(int(ratio * x) for x in gt)
                 # crop gt based on gt dimensions
                 gt_crop = image[gt_resized[1]:gt_resized[3], gt_resized[0]:gt_resized[2]]
+                # save gt crop also in crops
+                gt_crop_path_in_crops = f"/work3/s212725/WasteProject/data/crops/{file_name[:-4]}_gt{j}.jpg"
+                cv2.imwrite(gt_crop_path_in_crops, gt_crop)
+
+                # save gt crop in a separate gt_crops dir
                 # save cropped gt with initial file_name + crop number
                 gt_crop_path = f"/work3/s212725/WasteProject/data/gt_crops/{file_name[:-4]}_{j}.jpg"
                 if not os.path.exists(os.path.dirname(gt_crop_path)):
                     os.makedirs(os.path.dirname(gt_crop_path))
-                
                 cv2.imwrite(gt_crop_path, gt_crop)
-                cat_gt = super_cats[j]
                 
+                cat_gt = super_cats[j]
+                crops_with_labels[gt_crop_path_in_crops] = classes[cat_gt]
                 iou = calculate_iou(gt_resized, crop)
                 if iou >= 0.5:
                     crops_with_labels[crop_path] = classes[cat_gt]
@@ -158,6 +163,8 @@ if __name__ == '__main__':
 
         if i == 3:
             break
+
+    # include gt crop in the json file
 
     # create a json file with the crop path and the label
     # Serializing json
