@@ -12,6 +12,7 @@ import pandas as pd
 import matplotlib as plt
 import seaborn as sns; sns.set()
 from src.data.dataloader import *
+import re
 import cv2
 
 class RegionProposalsDataset(Dataset):
@@ -36,6 +37,7 @@ class RegionProposalsDataset(Dataset):
 
     def __getitem__(self, idx):
         path = self.ids_to_path[idx]
+        
         label = self.paths_to_label[path]
         # open the image
         image = Image.open(path)
@@ -44,12 +46,4 @@ class RegionProposalsDataset(Dataset):
             image = self.transform(image)
 
         # return the image and the label
-        return image, label
-    
-# declare a main
-if __name__ == '__main__':
-    path = r"C:\Users\carol\deep_learning_in_cv\P1_2_WasteManagment\region_3_proposals.json"
-    dataset = RegionProposalsDataset(path, None)
-    image, label = dataset[3]
-    print(image.shape)
-    print(label)
+        return image, label, path
