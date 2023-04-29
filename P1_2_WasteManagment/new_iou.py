@@ -109,7 +109,7 @@ if __name__ == '__main__':
     crops_with_labels = {}
 
     print(f"If the length of the train dataset is {len(dataset_train)} and I am getting 5 proposals per image, my total number of proposals should be {len(dataset_train)*5}")
-    for i in range(0, len(dataset_train)):
+    for i in range(501, len(dataset_train)):
         print("Processing Image: " + str(i) + " of " + str(len(dataset_train)) + " images")
         image, anns = dataset_train[i]
         gt_bboxs = anns['boxes'] # Ground Truth boxes in the image
