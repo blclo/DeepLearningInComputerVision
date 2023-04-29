@@ -52,10 +52,10 @@ def resize_image(image):
     width, height = image.size
 
     # Determine which dimension to resize based on maximum dimension
-    if width > height and width > 480:
+    if width >= height and width > 480:
         ratio = 480.0 / width
         new_size = (int(width * ratio), int(height * ratio))
-    elif height > width and height > 480:
+    elif height >= width and height > 480:
         ratio = 480.0 / height
         new_size = (int(width * ratio), int(height * ratio))
     else:
@@ -108,9 +108,8 @@ if __name__ == '__main__':
 
     crops_with_labels = {}
 
-    i = 0
     print(f"If the length of the train dataset is {len(dataset_train)} and I am getting 5 proposals per image, my total number of proposals should be {len(dataset_train)*5}")
-    for i in range(len(dataset_train)):
+    for i in range(0, len(dataset_train)):
         print("Processing Image: " + str(i) + " of " + str(len(dataset_train)) + " images")
         image, anns = dataset_train[i]
         gt_bboxs = anns['boxes'] # Ground Truth boxes in the image
