@@ -87,10 +87,10 @@ if __name__ == '__main__':
     dataset_train = TacoDataset(dataset_path = r'/work3/s212725/WasteProject/data', split_type = 'train', transform=None)
     taco_dataloader_train = DataLoader(dataset_train, batch_size=32, shuffle=True, collate_fn=collate_fn)
 
-    dataset_test = TacoDataset(dataset_path = r'/work3/s212725/WasteProject/data', split_type = 'test', transform=transform)
+    dataset_test = TacoDataset(dataset_path = r'/work3/s212725/WasteProject/data', split_type = 'test', transform=None)
     taco_dataloader_test = DataLoader(dataset_test, batch_size=32, shuffle=True, collate_fn=collate_fn)
 
-    dataset_val = TacoDataset(dataset_path = r'/work3/s212725/WasteProject/data', split_type = 'val', transform=transform)
+    dataset_val = TacoDataset(dataset_path = r'/work3/s212725/WasteProject/data', split_type = 'val', transform=None)
     taco_dataloader_val = DataLoader(dataset_val, batch_size=32, shuffle=True, collate_fn=collate_fn)
 
     dataset_path = r'/work3/s212725/WasteProject/data'
@@ -108,6 +108,7 @@ if __name__ == '__main__':
 
     crops_with_labels = {}
 
+    i = 0
     print(f"If the length of the train dataset is {len(dataset_train)} and I am getting 5 proposals per image, my total number of proposals should be {len(dataset_train)*5}")
     for i in range(len(dataset_train)):
         print("Processing Image: " + str(i) + " of " + str(len(dataset_train)) + " images")
@@ -170,29 +171,31 @@ if __name__ == '__main__':
             else:
                 crops_with_labels[crop_path] = classes['Background']
 
+
         # save checkpoint every 10 iterations
-        if i%100 == 0:
+        if i%100 == 0 and i!=0:
             print(f"Processed {i} images, time to save them")
-            json_object = json.dumps(crops_with_labels, indent=4)
-            # Create a json file 
-            with open(f"region_{i}_proposals.json", "w") as outfile:
-                outfile.write(json_object)
-
-            if os.path.isfile("region_{i}_proposals.json"):
-                print("File created successfully!")
-            else:
-                print("Error creating file!")
             print(f"Total number of crops: {len(crops_with_labels)}")
+            json_object = json.dumps(crops_with_labels, indent=4)
+            try:
+                # Create a json file 
+                with open(f"region_{i}_proposals_train.json", "w") as outfile:
+                    outfile.write(json_object)
+                print("File created successfully!")
+            except Exception as e:
+                print("Error saving the file: " + str(e))
 
-
+    
     # create the final json file with the crop path and the label
     json_object = json.dumps(crops_with_labels, indent=4)
     
     # Create a json file 
-    with open("region_proposals.json", "w") as outfile:
+    with open("region_proposals_train.json", "w") as outfile:
         outfile.write(json_object)
 
+    print(f"Total number of crops: {len(crops_with_labels)}")
     if os.path.isfile("region_proposals.json"):
-        print("File created successfully!")
+        print("Final file created successfully!")
     else:
-        print("Error creating file!")
+        print("Error creating fle!")
+    
