@@ -8,6 +8,7 @@ import torch
 import torchvision.datasets as datasets
 from torch.utils.data import DataLoader
 from src.data.rp_dataloader import RegionProposalsDataset
+import torchvision.transforms as transforms
 import time
 from tqdm import trange, tqdm
 from src.models.model import get_model
@@ -17,7 +18,10 @@ import wandb
 #  ---------------  Training  ---------------
 def train(
         model_name: str,
-        batch_size: int = 12, lr=1e-4, weight_decay=0.9, epochs: int = 100, checkpoint_every_epoch: int = 5,
+        batch_size: int = 12, lr=1e-4, weight_decay=0.9, epochs: int = 100, 
+        experiment_name: str = None,
+        checkpoint_every_epoch: int = 5,
+        save_path: str = None,
         seed: int = 42,
     ):
 
@@ -36,10 +40,15 @@ def train(
         name=f"TACO_{model_name}_lr={lr}_epochs={epochs}_batch_size={batch_size}_seed={seed}",
     )
     
-    path_train = r"/work3/s212725/WasteProject/scripts_region_proposal_dataset_creation/all_train_region_proposals_together.json"
-    train_dataset = RegionProposalsDataset(path_train, transform=None)
+    # define transforms to resize - warping proposals
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+    ])
+    path_train = r"/work3/s212725/WasteProject/data/json/train_region_proposals.json"
+    train_dataset = RegionProposalsDataset(path_train, transform=transform)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-    path_val = r"/work3/s212725/WasteProject/scripts_region_proposal_dataset_creation/all_val_region_proposals_together.json"
+    path_val = r"/work3/s212725/WasteProject/data/json/val_region_proposals.json"
     val_dataset = RegionProposalsDataset(path_val, transform=None)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
@@ -65,13 +74,13 @@ def train(
             model.train()
             for batch in tqdm(iter(train_loader)):
                 # Extract data                
-                inputs, labels, concepts = batch
-                inputs, labels, concepts = inputs.to(device), labels.to(device), torch.stack(concepts).T.to(device)
+                images, labels, paths = batch
+                images, labels = images.to(device), labels.to(device)
 
                 # Zero the parameter gradients
                 optimizer.zero_grad()
                 # Forward + backward
-                outputs = model(inputs)
+                outputs = model(images)
                 # Get predictions from log-softmax scores
                 preds = torch.exp(outputs.detach()).topk(1)[1]
 
@@ -92,11 +101,11 @@ def train(
             with torch.no_grad():
                 for batch in tqdm(iter(val_loader)):
                     # Extract data                
-                    inputs, labels, concepts = batch
-                    inputs, labels, concepts = inputs.to(device), labels.to(device), torch.stack(concepts).T.to(device)
+                    images, labels, paths = batch
+                    images, labels = images.to(device), labels.to(device)
 
                     # Forward + backward
-                    outputs = model(inputs)
+                    outputs = model(images)
                     preds = torch.exp(outputs).topk(1)[1]
 
                     # Compute loss and accuracy
@@ -104,8 +113,9 @@ def train(
                     equals = preds.flatten() == labels
                     running_acc_val += torch.mean(equals.type(torch.FloatTensor))
 
-            if running_loss_val / len(val_loader) < current_best_loss and epoch % checkpoint_every_epoch == 0:
-                current_best_loss = running_loss_val / len(val_loader)
+            val_loss = running_loss_val / len(val_loader)
+            if val_loss < current_best_loss and epoch % checkpoint_every_epoch == 0:
+                current_best_loss = val_loss
                 # Create and save checkpoint
                 checkpoint = {
                     "experiment_name": experiment_name,
@@ -122,11 +132,7 @@ def train(
                         "device": device,
                     },
                     "data": {
-                        "path": processed_datafolder_path,
-                        "normalization": {
-                            "mu": list(normalization['mean'].numpy()),
-                            "sigma": list(normalization['std'].numpy()),
-                        },
+                        "path": path_train,
                     },
                     "best_epoch": epoch + 1,
                     "state_dict": model.state_dict(),
@@ -156,31 +162,29 @@ def train(
             train_loss = running_loss_train / len(train_loader)
             wandb.log({"Epoch":epoch, "train/acc": train_acc, "train/loss": train_loss})
             val_acc = running_acc_val / len(val_loader)
-            val_loss = running_loss_val / len(val_loader)
             wandb.log({"Epoch":epoch, "val/acc": val_acc, "val/loss": val_loss})
 
 if __name__ == '__main__':
 
     # BASE_PATH = Path('projects/xai/XAI-ResponsibleAI')
-    BASE_PATH = Path()
-
-    raw_datafolder_path = BASE_PATH / 'data/raw/CUB_200_2011'
-    processed_datafolder_path = BASE_PATH / 'data/processed/CUB_processed/class_attr_data_10'
+    BASE_PATH = Path(r"/work3/s212725/WasteProject")
     
     save_path = BASE_PATH / 'models'
-    experiment_name = 'ResNet50-no_freeze-lr1e-5.wd1e-3.bz32.seed0'
+    model_name = 'ResNet18'
+    lr = 1e-5
+    wd = 1e-3
+    batch_size = 32
+    seed = 14
+    experiment_name = f'{model_name}-lr{lr}.wd{wd}.bz{batch_size}.seed{seed}'
 
     train(
-        raw_datafolder_path=raw_datafolder_path,
-        processed_datafolder_path=processed_datafolder_path,
-        model_name='ResNet50',
-        # from_checkpoint=save_path / experiment_name, # optional: for continuing training of models
+        model_name='ResNet18',
         batch_size=32,
         epochs=100,
-        lr=1e-5,
-        weight_decay=1e-3,
+        lr=lr,
+        weight_decay=wd,
         experiment_name=experiment_name,
-        checkpoint_every_epoch=1,
+        checkpoint_every_epoch=5,
         save_path=save_path,
-        seed=0,
+        seed=seed,
     )
