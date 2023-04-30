@@ -109,7 +109,7 @@ if __name__ == '__main__':
     crops_with_labels = {}
 
     print(f"If the length of the train dataset is {len(dataset_train)} and I am getting 5 proposals per image, my total number of proposals should be {len(dataset_train)*5}")
-    for i in range(501, len(dataset_train)):
+    for i in range(0, len(dataset_train)):
         print("Processing Image: " + str(i) + " of " + str(len(dataset_train)) + " images")
         image, anns = dataset_train[i]
         gt_bboxs = anns['boxes'] # Ground Truth boxes in the image
@@ -189,11 +189,11 @@ if __name__ == '__main__':
     json_object = json.dumps(crops_with_labels, indent=4)
     
     # Create a json file 
-    with open("region_proposals_train.json", "w") as outfile:
+    with open("region_proposals_train_final.json", "w") as outfile:
         outfile.write(json_object)
 
     print(f"Total number of crops: {len(crops_with_labels)}")
-    if os.path.isfile("region_proposals.json"):
+    if os.path.isfile("region_proposals_train_final.json"):
         print("Final file created successfully!")
     else:
         print("Error creating fle!")
