@@ -18,6 +18,7 @@ import cv2
 class RegionProposalsDataset(Dataset):
     # Returns a compatible Torch Dataset object customized for the WasteProducts dataset
     def __init__(self, dataset_path, transform=None):
+        super(RegionProposalsDataset, self).__init__(dataset_path, transform=transform)
         # define path for json file with the proposals
         self.dataset_path = dataset_path
         self.transform = transform
@@ -33,11 +34,12 @@ class RegionProposalsDataset(Dataset):
             self.ids_to_path[i] = path_to_crop
 
     def __len__(self):
-        return len(self.paths)
+        return len(self.ids_to_path)
 
     def __getitem__(self, idx):
+        #print(f"Index accessed inside get item {idx}")
         path = self.ids_to_path[idx]
-        
+        #print(path)
         label = self.paths_to_label[path]
         # open the image
         image = Image.open(path)
