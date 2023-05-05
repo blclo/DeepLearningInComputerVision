@@ -3,6 +3,11 @@ Special Course in Deep Learning in Computer Vision
 
 Repository for the Special Course in Deep Learning in Computer Vision @DTU
 
+This repo will include 3 of the projects developed:
+- P1_1: Image Classification: HotDog/NoHotDog
+- P1_2: Object Detection: Waste Classification using the TACO dataset.
+- P_2: Generative Adversarial Networks
+
 ## Setup
 
 Clone the repository and create a virtual environment (with Python 3.10). A pre-defined environment running with CUDA 11.6 can be created like:
