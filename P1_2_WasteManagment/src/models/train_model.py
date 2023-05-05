@@ -58,7 +58,7 @@ def train(
 
     # ------------------------ Balanced Sampler ------------------------ #
     # Load the labels obtained from \src\data\save_labels_to_pkl_file.py
-    with open('../src/data/labels.pkl', 'rb') as f:
+    with open(r'/work3/s212725/WasteProject/src/data/labels.pkl', 'rb') as f:
         labels = pickle.load(f)
     
     # Create the balanced sampler
@@ -69,7 +69,7 @@ def train(
     print(f"The length of the train loader is of {len(train_loader)}")
     
     path_val = r"/work3/s212725/WasteProject/data/json/val_region_proposals.json"
-    val_dataset = RegionProposalsDataset(path_val, transform=None)
+    val_dataset = RegionProposalsDataset(path_val, transform=transform)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
     # ---------------------------- Training --------------------------------- #
@@ -94,27 +94,25 @@ def train(
             running_acc_train,  running_acc_val     = 0.0, 0.0
 
             model.train()
-            for batch_idx, (images, labels, paths) in tqdm(enumerate(train_loader)):
-                # Extract data
-                images, labels = images.to(device), labels.to(device)
-                # Zero the parameter gradients
-                optimizer.zero_grad()
-                # Forward + backward
-                outputs = model(images)
-                # Get predictions from log-softmax scores
-                preds = torch.exp(outputs.detach()).topk(1)[1]
-                # Get loss and compute gradient
-                loss = criterion(outputs, labels)
-                running_loss_train += loss.item()
-                loss.backward()
-                # Optimize
-                optimizer.step()
-                # Store accuracy
-                print(preds)
-                print(labels)
-                train_acc = (preds.squeeze() == labels).sum().item()
-                print(train_acc)
-                running_acc_train += train_acc
+            with tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}") as train_bar:
+                for batch_idx, (images, labels, paths) in enumerate(train_bar):
+                    # Extract data
+                    images, labels = images.to(device), labels.to(device)
+                    # Zero the parameter gradients
+                    optimizer.zero_grad()
+                    # Forward + backward
+                    outputs = model(images)
+                    # Get predictions from log-softmax scores
+                    preds = torch.exp(outputs.detach()).topk(1)[1]
+                    # Get loss and compute gradient
+                    loss = criterion(outputs, labels)
+                    running_loss_train += loss.item()
+                    loss.backward()
+                    # Optimize
+                    optimizer.step()
+                    # Store accuracy
+                    train_acc = (preds.squeeze() == labels).sum().item()
+                    running_acc_train += train_acc
 
             
             # Validation
@@ -131,8 +129,9 @@ def train(
                     preds = torch.exp(outputs).topk(1)[1]
 
                     # Compute loss and accuracy
-                    running_loss_val += criterion(outputs, labels) # For NLLLoss                    
-                    correct = (preds.squeeze() == labels).sum().item() # count the number of correct predictions
+                    val_loss = criterion(outputs, labels)
+                    running_loss_val += val_loss.item() # For NLLLoss                    
+                    running_acc_val = (preds.squeeze() == labels).sum().item() # count the number of correct predictions
 
 
             val_loss = running_loss_val / len(val_loader)
@@ -193,14 +192,14 @@ if __name__ == '__main__':
     
     save_path = BASE_PATH / 'models'
     model_name = 'ResNet18'
-    lr = 1e-5
+    lr = 1e-3
     wd = 1e-3
     batch_size = 32
     seed = 14
     experiment_name = f'{model_name}-lr{lr}.wd{wd}.bz{batch_size}.seed{seed}'
 
     train(
-        model_name='ResNet18',
+        model_name=model_name,
         batch_size=32,
         epochs=100,
         lr=lr,
