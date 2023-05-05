@@ -41,5 +41,5 @@ if __name__ == '__main__':
                 transformed_gt_crops_with_labels[path_transformed_gt] = label
     
     json_object = json.dumps(transformed_gt_crops_with_labels, indent=4)
-    with open(f"gt_augmented_proposals.json", "w") as outfile:
+    with open("/work3/s212725/WasteProject/data/json/gt_augmented_proposals.json", "w") as outfile:
         outfile.write(json_object)
