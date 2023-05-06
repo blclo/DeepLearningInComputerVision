@@ -21,7 +21,7 @@ class BalancedSampler(Sampler):
         self.negative_samples_idxs = []
         
         # Split samples into positive and negative 
-        for i, (path_to_crop, label) in enumerate(paths_dic.items()):
+        for i, (path_to_crop, label) in enumerate(data.items()):
             if label == 28:
                 self.negative_samples_idxs.append(i)
             else:
