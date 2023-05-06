@@ -18,7 +18,6 @@ import cv2
 class RegionProposalsDataset(Dataset):
     # Returns a compatible Torch Dataset object customized for the WasteProducts dataset
     def __init__(self, dataset_path, transform=None):
-        super(RegionProposalsDataset, self).__init__(dataset_path, transform=transform)
         # define path for json file with the proposals
         self.dataset_path = dataset_path
         self.transform = transform
@@ -36,16 +35,23 @@ class RegionProposalsDataset(Dataset):
     def __len__(self):
         return len(self.ids_to_path)
 
-    def __getitem__(self, idx):
-        #print(f"Index accessed inside get item {idx}")
-        path = self.ids_to_path[idx]
-        #print(path)
-        label = self.paths_to_label[path]
-        # open the image
-        image = Image.open(path)
+    def __getitem__(self, indices):
+        batch_images = []
+        batch_labels = []
+        batch_paths = []
 
-        if self.transform:
-            image = self.transform(image)
+        for index in indices:
+            path = self.ids_to_path[index]
 
-        # return the image and the label
-        return image, label, path
+            label = self.paths_to_label[path]
+            # open the image
+            image = Image.open(path).convert('RGB')
+
+            if self.transform:
+                image = self.transform(image)
+
+            batch_images.append(image)
+            batch_labels.append(label)
+            batch_paths.append(path)
+
+        return batch_images, batch_labels, batch_paths
