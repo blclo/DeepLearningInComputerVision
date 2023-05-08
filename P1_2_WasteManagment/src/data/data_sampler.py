@@ -21,7 +21,7 @@ class BalancedSampler(Sampler):
         self.negative_samples_idxs = []
         
         # Split samples into positive and negative 
-        for i, (path_to_crop, label) in enumerate(data.items()):
+        for i, (path_to_crop, label) in enumerate(self.data.items()):
             if label == 28:
                 self.negative_samples_idxs.append(i)
             else:
@@ -61,4 +61,4 @@ class BalancedSampler(Sampler):
     def __len__(self):
         # This method returns the number of samples in the dataset so that the data loader
         # knows how many batches it needs to iterate through.
-        return len(self.data)
+        return len(self.data)//32
