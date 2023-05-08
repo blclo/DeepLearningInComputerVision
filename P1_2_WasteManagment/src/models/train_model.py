@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import torch
 import torchvision.datasets as datasets
 from torch.utils.data import DataLoader
-from src.data.rp_dataloader import RegionProposalsDataset
+from src.data.rp_dataloader import RegionProposalsDatasetTrain, RegionProposalsDataset
 from src.data.data_sampler import BalancedSampler
 import torchvision.transforms as transforms
 import time
@@ -39,7 +39,7 @@ def train(
         "dataset": "TACO",
         "epochs": epochs,
         },
-        name=f"TACO_{model_name}_lr={lr}_epochs={epochs}_batch_size={batch_size}_seed={seed}",
+        name=f"SAMPLER_TACO_{model_name}_lr={lr}_epochs={epochs}_batch_size={batch_size}_seed={seed}",
     )
 
     # ---------------------------- Dataset ----------------------------- #
@@ -53,7 +53,7 @@ def train(
     path_train = r"/work3/s212725/WasteProject/data/json/train_region_proposals.json"
     
     # dataloader given json file
-    train_dataset = RegionProposalsDataset(path_train, transform=transform)
+    train_dataset = RegionProposalsDatasetTrain(path_train, transform=transform)
     print(f"The length of the train dataset is of {len(train_dataset)}")
 
     # ------------------------ Balanced Sampler ------------------------ #
@@ -62,10 +62,10 @@ def train(
         labels = pickle.load(f)
     
     # Create the balanced sampler
-    sampler = BalancedSampler(labels, pos_fraction=0.25, batch_size=32)
+    paths_dic = train_dataset.paths_to_label
+    sampler = BalancedSampler(paths_dic)
 
-    #train_loader = DataLoader(train_dataset, batch_size=32, sampler=sampler, num_workers=4)
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=1, sampler=sampler, num_workers=4)
     print(f"The length of the train loader is of {len(train_loader)}")
     
     path_val = r"/work3/s212725/WasteProject/data/json/val_region_proposals.json"
@@ -96,6 +96,8 @@ def train(
             model.train()
             with tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}") as train_bar:
                 for batch_idx, (images, labels, paths) in enumerate(train_bar):
+                    labels = torch.stack(labels).squeeze()
+                    images = torch.stack(images).squeeze(dim=1)
                     # Extract data
                     images, labels = images.to(device), labels.to(device)
                     # Zero the parameter gradients
@@ -200,7 +202,7 @@ if __name__ == '__main__':
 
     train(
         model_name=model_name,
-        batch_size=32,
+        batch_size=batch_size,
         epochs=100,
         lr=lr,
         weight_decay=wd,
