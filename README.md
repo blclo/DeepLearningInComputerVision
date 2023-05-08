@@ -5,7 +5,7 @@ Repository for the Special Course in Deep Learning in Computer Vision @DTU
 
 This repo will include 3 of the projects developed:
 - P1_1: Image Classification: HotDog/NoHotDog
-- P1_2: Object Detection: Waste Classification using the TACO dataset.
+- P1_2: Object Detection: RCNN Waste Classification using the TACO dataset.
 - P_2: Generative Adversarial Networks
 
 ## Setup
@@ -36,28 +36,6 @@ If running on GPU with CUDA 11.6 install Pytorch with the following command:
 ```
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
-
-## Project Organization P1_1_Classification
-------------
-
-    ├── README.md          <- The top-level README for developers using this project.
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   |   ├── __init__.py
-    │   │   ├── dataloader.py
-    │   |   └── hotdog-nothotdog <- The original data dump.
-    │   │
-    │   └── models         <- Scripts to train models and then use trained models to make
-    │       │                 predictions
-    │       ├── __init__.py
-    │       ├── model.py
-    │       └── train_model.py
-    │
-    └── requirements.txt 
 
 ## Accessing the DTU Cluster
 1. Open your terminal and write:
