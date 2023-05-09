@@ -49,25 +49,24 @@ def train(
         transforms.ToTensor(),
     ])
     
-    # file obtained through create_crop_dataset.py
-    path_train = r"/work3/s212725/WasteProject/data/json/train_region_proposals.json"
+    # file obtained through create_rp_dataset.py, contains the path to the region proposals next to their label
+    # additionally to the generated json, data_augmentation_of_gt_proposals.py was used to augment the dataset
+    path_train = r"/work3/s212725/WasteProject/data/json/train_all_region_proposals_including_aug.json"
     
-    # dataloader given json file
+    # dataloader for region proposals, given json file
     train_dataset = RegionProposalsDatasetTrain(path_train, transform=transform)
     print(f"The length of the train dataset is of {len(train_dataset)}")
 
     # ------------------------ Balanced Sampler ------------------------ #
-    # Load the labels obtained from \src\data\save_labels_to_pkl_file.py
-    with open(r'/work3/s212725/WasteProject/src/data/labels.pkl', 'rb') as f:
-        labels = pickle.load(f)
-    
-    # Create the balanced sampler
+    # Create the balanced sampler, ensures 75% of background proposals and 25% of positive proposals
     paths_dic = train_dataset.paths_to_label
-    sampler = BalancedSampler(paths_dic)
+    sampler = BalancedSampler(paths_dic, 0.25, 12)
 
+    # ---------------------------- Train Dataloader -------------------------- #
     train_loader = DataLoader(train_dataset, batch_size=1, sampler=sampler, num_workers=4)
     print(f"The length of the train loader is of {len(train_loader)}")
     
+    # ---------------------------- Val Dataloader -------------------------- #
     path_val = r"/work3/s212725/WasteProject/data/json/val_region_proposals.json"
     val_dataset = RegionProposalsDataset(path_val, transform=transform)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
@@ -196,7 +195,7 @@ if __name__ == '__main__':
     model_name = 'ResNet18'
     lr = 1e-3
     wd = 1e-3
-    batch_size = 32
+    batch_size = 12
     seed = 14
     experiment_name = f'{model_name}-lr{lr}.wd{wd}.bz{batch_size}.seed{seed}'
 
