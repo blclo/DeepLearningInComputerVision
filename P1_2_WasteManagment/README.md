@@ -19,7 +19,7 @@ Search.
     │   
     ├── scripts_region_proposal_dataset_creation
     │   ├── data_augmentation_of_gt_proposals.py  <- Script to perform data augmentation in the ground truth crops given its limited availability
-    │   └── create_crop_dataset.py  <- Uses Selective Search algorithm and generates a dataset for crops and ground truth crops, 
+    │   └── create_rp_dataset.py  <- Uses Selective Search algorithm and generates a dataset for crops and ground truth crops, 
     │                                  saving them into files and assigning their path to the label after computing Intersection Over Union.
     │   
     ├── src                <- Source code for use in this project.
