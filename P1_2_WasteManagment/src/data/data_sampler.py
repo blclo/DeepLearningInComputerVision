@@ -10,6 +10,7 @@ import torchvision.datasets as datasets
 from torch.utils.data import DataLoader
 from src.data.rp_dataloader import RegionProposalsDataset
 import json
+import tqdm
     
 
 class BalancedSampler(Sampler):
@@ -36,8 +37,9 @@ class BalancedSampler(Sampler):
         
         # Create a list of batch indices
         self.batch_indices = []
-        for i in range(self.num_batches):
-            print(f"Processing batch {i}, out of {self.num_batches}")
+        print("Processing balanced batches in sampler:")
+        for i in tqdm.tqdm(range(self.num_batches)):
+            #print(f"Processing batch {i}, out of {self.num_batches}")
             # Randomly sample positive indices
             pos_batch_indices = np.random.choice(self.positive_samples_idxs, size=self.num_pos_per_batch, replace=False)
             # Randomly sample negative indices
