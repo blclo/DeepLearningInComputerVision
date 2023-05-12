@@ -20,7 +20,7 @@ def load_experiment(experiment_path: Path, device):
     print("")
 
     # Load model weights
-    model, criterion, _, _ = get_model(experiment['model']['name'], device=device)
+    model, criterion, _  = get_model(experiment['model']['name'], device=device)
     model.load_state_dict(experiment['state_dict'])
 
     return experiment['model']['name'], model, criterion
