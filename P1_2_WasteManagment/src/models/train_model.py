@@ -39,7 +39,7 @@ def train(
         "dataset": "TACO",
         "epochs": epochs,
         },
-        name=f"SAMPLER_TACO_{model_name}_lr={lr}_epochs={epochs}_batch_size={batch_size}_seed={seed}",
+        name=f"New_w_Sampler_CELoss_NoWeightDecay_TACO_{model_name}_lr={lr}_epochs={epochs}_batch_size={batch_size}_seed={seed}",
     )
 
     # ---------------------------- Dataset ----------------------------- #
@@ -60,14 +60,14 @@ def train(
     # ------------------------ Balanced Sampler ------------------------ #
     # Create the balanced sampler, ensures 75% of background proposals and 25% of positive proposals
     paths_dic = train_dataset.paths_to_label
-    sampler = BalancedSampler(paths_dic, 0.25, 12)
+    sampler = BalancedSampler(paths_dic, 0.25, 32)
 
     # ---------------------------- Train Dataloader -------------------------- #
     train_loader = DataLoader(train_dataset, batch_size=1, sampler=sampler, num_workers=4)
     print(f"The length of the train loader is of {len(train_loader)}")
     
     # ---------------------------- Val Dataloader -------------------------- #
-    path_val = r"/work3/s212725/WasteProject/data/json/val_region_proposals.json"
+    path_val = r"/work3/s212725/WasteProject/data/json/val_region_proposals_with_aug.json"
     val_dataset = RegionProposalsDataset(path_val, transform=transform)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
@@ -81,7 +81,7 @@ def train(
 
     # Define the model, loss criterion and optimizer
     model, criterion, optimizer = get_model(model_name, lr=lr, weight_decay=weight_decay, device=device)
-    criterion = nn.NLLLoss()
+    #criterion = nn.NLLLoss()
     
     print("CNN Architecture:")
     print(model)
@@ -89,9 +89,10 @@ def train(
     current_best_loss = torch.inf
     with trange(epochs) as t:
         for epoch in t:
-            running_loss_train, running_loss_val    = 0.0, 0.0
-            running_acc_train,  running_acc_val     = 0.0, 0.0
-
+            running_loss_train = 0.0
+            running_loss_val = 0.0
+            running_acc_train = 0.0
+            running_acc_val = 0.0
             model.train()
             with tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}") as train_bar:
                 for batch_idx, (images, labels, paths) in enumerate(train_bar):
@@ -120,7 +121,7 @@ def train(
             model.eval()
             # disable gradient propagation
             with torch.no_grad():
-                for batch in tqdm(iter(val_loader)):
+                for batch in tqdm(val_loader):
                     # Extract data                
                     images, labels, paths = batch
                     images, labels = images.to(device), labels.to(device)
@@ -131,8 +132,8 @@ def train(
 
                     # Compute loss and accuracy
                     val_loss = criterion(outputs, labels)
-                    running_loss_val += val_loss.item() # For NLLLoss                    
-                    running_acc_val = (preds.squeeze() == labels).sum().item() # count the number of correct predictions
+                    running_loss_val += val_loss.detach().item()              
+                    running_acc_val += (preds.squeeze() == labels).sum().item() # count the number of correct predictions
 
 
             val_loss = running_loss_val / len(val_loader)
@@ -195,7 +196,7 @@ if __name__ == '__main__':
     model_name = 'ResNet18'
     lr = 1e-3
     wd = 1e-3
-    batch_size = 12
+    batch_size = 32
     seed = 14
     experiment_name = f'{model_name}-lr{lr}.wd{wd}.bz{batch_size}.seed{seed}'
 
