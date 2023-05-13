@@ -8,7 +8,14 @@ Search.
 3. Apply the model on the test images and implement non-maximum suppresion and Intersection over Union (IoU).
 4. Evaluate the object detection performance using standard metrics
 
+### Length of datasets
+- The length of the train dataset is 1050 images and 140638 region proposals, also known as crops.
+- The length of the val dataset is 225 images and 29151 region proposals.
+- The length of the test dataset is 225 images and 23224 region proposals.
+
 ### Results 
+Results in training show an accuracy of 31.93% after including the augmented crops of the ground truth proposals - combating the dataset unbalance. A similar accuracy is obtained through validation - 29.34%. The testing split obtains an accuracy of 90.03%.
+
 For the visual representation of the results it was necessary to display the image together with its ground truth proposals, and the region proposals classifed to have a positive label.
 
 In order to do this a dictionary was included in the **create_rp_dataset.py** file. This dictionary contains the following:
