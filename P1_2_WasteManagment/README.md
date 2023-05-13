@@ -8,6 +8,22 @@ Search.
 3. Apply the model on the test images and implement non-maximum suppresion and Intersection over Union (IoU).
 4. Evaluate the object detection performance using standard metrics
 
+### Results 
+For the visual representation of the results it was necessary to display the image together with its ground truth proposals, and the region proposals classifed to have a positive label.
+
+In order to do this a dictionary was included in the **create_rp_dataset.py** file. This dictionary contains the following:
+
+- test_dictionary["image_id"] = [] -> 225 images ids
+- test_dictionary["image_file_name"] = [] -> File names of the 225 images
+- test_dictionary["super_cats"] = [] -> An array of 225 arrays containing inside each the super categories of each images
+- test_dictionary["gt_bboxs"] = [] -> An array of 225 arrays. In each one, the ground truth bounding boxes for each image (out of the 225) are stored.
+- test_dictionary["rp_boxes"] = [] -> An array of 225 arrays, each of the 100 region proposal boxes per image
+- test_dictionary["crop_paths"] = [] -> An array of 225 arrays, each of 100 paths for each of the crops paths
+- test_dictionary["labels_of_crops_in_paths"] = [] -> 225 arrays, each of 100 labels for each of the crops per image
+
+This dictionary is created and stored in testing_rp_dict.pkl. It will be later be loaded in the final notebook to print some results. 
+In addition **test_model.py** is saving in **/data/json/test_loop_crops_paths_to_predicted_label.json** the path to the tested crops next to the predicted label.
+
 ## Files Organization
 ------------
 
