@@ -9,6 +9,7 @@ import numpy as np
 import skimage
 import selective_search
 import json
+import pickle
 
 def collate_fn(batch):
         # Convert the batch of images and annotations to tensors
@@ -67,9 +68,10 @@ def resize_image(image):
 
     return resized_image, ratio
 
+
 # define main
 if __name__ == '__main__':
-    dataset_creation = "val"
+    dataset_creation = "test"
 
     classes = {'Background':28 , 'Aluminium foil': 0, 'Battery': 1, 'Blister pack': 2, 'Bottle': 3, 'Bottle cap': 4, 
         'Broken glass': 5, 'Can': 6, 'Carton': 7, 'Cup': 8, 'Food waste': 9, 'Glass jar': 10, 
@@ -78,13 +80,7 @@ if __name__ == '__main__':
         'Rope & strings': 20, 'Scrap metal': 21, 'Shoe': 22, 'Squeezable tube': 23, 'Straw': 24,
         'Styrofoam piece': 25, 'Unlabeled litter': 26, 'Cigarette': 27}
         
-    # ------------------- Import the dataset -------------------
-    # Define the transformation pipeline
-    transform = transforms.Compose([
-        transforms.Resize((256, 256)),
-        transforms.ToTensor(),
-    ])
-
+    # ------------------- Import the dataset ------------------- #
     if dataset_creation == "train":
         # Instantiate the dataset and dataloader
         dataset = TacoDataset(dataset_path = r'/work3/s212725/WasteProject/data', split_type = 'train', transform=None)
@@ -110,8 +106,19 @@ if __name__ == '__main__':
             break
 
     crops_with_labels = {}
+    test_dictionary = {}
 
     print(f"The length of the {dataset_creation} dataset is {len(dataset)}")
+    
+    if dataset_creation == "test":
+            test_dictionary["gt_bboxs"] = [] 
+            test_dictionary["image_id"] = []
+            test_dictionary["image_file_name"] = []
+            test_dictionary["super_cats"] = []
+            test_dictionary["crop_paths"] = []
+            test_dictionary["labels_of_crops_in_paths"] = []
+            test_dictionary["rp_boxes"] = []
+            
     for i in range(0, len(dataset)):
         print("Processing Image: " + str(i) + " of " + str(len(dataset)) + " images")
         image, anns = dataset[i]
@@ -120,13 +127,27 @@ if __name__ == '__main__':
         super_cats = anns['supercats']
         file_name = images[anns['image_id'].item()]['file_name']
         
-        #image_path = dataset_path + '/' + file_name
+        if dataset_creation == "test":
+            test_dictionary["gt_bboxs"].append(gt_bboxs)
+            test_dictionary["image_id"].append(image_id)
+            test_dictionary["image_file_name"].append(file_name)
+            test_dictionary["super_cats"].append(super_cats)
+
+        # ---- Dictionary storing for testing data ---- #
+        # it is required to store them to later use them in the final notebook
+        
         resized_image, ratio = resize_image(image)
         image = np.array(resized_image)
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         boxes = selective_search.selective_search(image, mode='fast')
         boxes_filter = selective_search.box_filter(boxes, min_size=1, topN=100)
         #print(f"Number of proposals: {len(boxes_filter)}")
+        if dataset_creation == "test":
+            # saving 100 rp boxes in the dictionary per image for later plotting
+            test_dictionary["rp_boxes"].append(boxes_filter)
+
+        test_crop_paths = []
+        test_crop_labels = []
         for z in range(len(boxes_filter)):
             assigned_iou = False
             crop = boxes_filter[z]
@@ -160,6 +181,12 @@ if __name__ == '__main__':
                 
                 cat_gt = super_cats[j]
                 cats_gt.append(cat_gt)
+                
+                if gt_crop_path_in_crops not in crops_with_labels:
+                    if dataset_creation == "test":
+                        test_crop_paths.append(gt_crop_path_in_crops)
+                        test_crop_labels.append(classes[cat_gt])
+                        
                 crops_with_labels[gt_crop_path_in_crops] = classes[cat_gt]
 
             max_iou = 0
@@ -169,10 +196,19 @@ if __name__ == '__main__':
                     max_iou = iou
                     index = j
             if max_iou >= 0.5:
-                crops_with_labels[crop_path] = classes[cats_gt[j]]
+                crops_with_labels[crop_path] = classes[cats_gt[index]]
+                if dataset_creation == "test":
+                    test_crop_paths.append(crop_path)
+                    test_crop_labels.append(classes[cats_gt[index]])
+                    
             else:
                 crops_with_labels[crop_path] = classes['Background']
-
+                if dataset_creation == "test":
+                    test_crop_paths.append(crop_path)
+                    test_crop_labels.append(classes['Background'])
+                    
+        test_dictionary["crop_paths"].append(test_crop_paths)
+        test_dictionary["labels_of_crops_in_paths"].append(test_crop_labels)
 
         # save checkpoint every 10 iterations
         if i%100 == 0 and i!=0:
@@ -188,16 +224,30 @@ if __name__ == '__main__':
                 print("Error saving the file: " + str(e))
 
     
-    # create the final json file with the crop path and the label
-    json_object = json.dumps(crops_with_labels, indent=4)
-    
-    # Create a json file 
-    with open(f"{dataset_creation}_region_proposals.json", "w") as outfile:
-        outfile.write(json_object)
+    if dataset_creation == "test":
+        try:
+            # Create a json file 
+            json_object = json.dumps(crops_with_labels, indent=4)
+            with open(f"/work3/s212725/WasteProject/data/json/corrected_{dataset_creation}_region_proposals_3.json", "w") as outfile:
+                outfile.write(json_object)
 
-    print(f"Total number of crops: {len(crops_with_labels)}")
-    if os.path.isfile(f"{dataset_creation}_region_proposals.json"):
-        print("Final file created successfully!")
+            # Save the dictionary as an object
+            with open('/work3/s212725/WasteProject/results/corrected_testing_rp_dict.pkl', 'wb') as f:
+                pickle.dump(test_dictionary, f)
+            print("Dictionary created successfully!")
+        except Exception as e:
+            print("Error saving the file: " + str(e))
     else:
-        print("Error creating fle!")
+        # create the final json file with the crop path and the label
+        json_object = json.dumps(crops_with_labels, indent=4)
+        
+        # Create a json file 
+        with open(f"/work3/s212725/WasteProject/data/json/{dataset_creation}_region_proposals.json", "w") as outfile:
+            outfile.write(json_object)
+
+        print(f"Total number of crops: {len(crops_with_labels)}")
+        if os.path.isfile(f"/work3/s212725/WasteProject/data/json/{dataset_creation}_region_proposals.json"):
+            print("Json file created successfully!")
+        else:
+            print("Error creating fle!")
     
