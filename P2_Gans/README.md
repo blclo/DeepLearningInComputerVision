@@ -25,6 +25,12 @@ To do this, you can start by aligning your images using https://github.com/happy
 3. Get your images in JPG file format in the raw_images directory
 3. Run `python ffhq-align.py -s raw_images/ -d aligned_images/`
 
+Afterwards we will make use of the projector.py script.
+1. In order to run this script succesfully it is required to run:
+`pip install --upgrade imageio-ffmpeg`
+2. Run `!python projector.py --outdir=out --target=align-carol.png --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/ffhq.pkl`
+
+
 ### Interpolate between two real images you reconstructed
 To interpolate between two real images that you have reconstructed using StyleGAN2, you can follow these steps:
 
@@ -44,7 +50,3 @@ To interpolate between two real images that you have reconstructed using StyleGA
 
 By interpolating between the latent codes of two reconstructed real images, you can create a sequence of images that smoothly transitions between the two originals. This interpolation technique allows you to explore and visualize the latent space of the generative model and observe the changes in image features and characteristics along the interpolation path.
 
-# How to get started
-1. Clone the stylegan2 repo
-2. If running this in the HPC use `module load cuda`
-3. 
