@@ -47,6 +47,10 @@ ssh userid@login1.hpc.dtu.dk
 4. Start up an interactive node using ```voltash```
 
 ## Setting up your jupyter notebook
+Make sure you have installed it in your env. If not do 
+```
+pip install notebook
+```
 1. Start it inside your interactive node
 ```
 jupyter notebook --no-browser --port=40000 --ip=$HOSTNAME
