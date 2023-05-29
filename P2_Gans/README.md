@@ -70,3 +70,16 @@ Some examples can be seen below:
 ![aging](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/gender_direction.png)
 ![gender](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/smile_direction.png)
 ![smile](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/aging_direction.png)
+
+### Generating images from text prompt using CLIP
+1. `!git clone https://github.com/vipermu/StyleCLIP`
+2. `%cd StyleCLIP`
+3. Install the requirements: 
+`!pip install git+https://github.com/openai/CLIP.git`
+`!pip install ftfy==5.8 opencv-python==4.5.1.48 regex==2020.11.13 torch==1.7.1 tqdm==4.56.0`
+3. Run the prompt to generate: `!python clip_generate.py --prompt "The image of a blond kid with green eyes"`
+
+Results below show the iterative process for the image generation:
+![blond_kid](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/clip_generated_blond_kid.png)
+
+The initialization of the latent code can have an impact on the generated images, although the significance may vary. Conditioning the generation on both an image and a text prompt is possible in some models, but it depends on the specific model's design and capabilities.
