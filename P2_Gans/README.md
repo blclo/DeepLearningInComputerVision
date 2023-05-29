@@ -14,9 +14,10 @@ You environment needs to match the required documentation from the https://githu
 ### Generating images from a pretrained GAN model 
 Make sure you have access to the pretrained network. In my case: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/ffhq.pkl
 
-Afterwards you can run - Ex: ´python generate.py --outdir=out --trunc=1 --seeds=14,8,33,56 --network=ffql_style.pkl´
+Afterwards you can run - Ex: `python generate.py --outdir=out --trunc=1 --seeds=14,8,33,56 --network=ffql_style.pkl`
 
 Results look like:
+
 ![generated_images](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/generated_random_faces.png)
 
 ### Reconstructing your own images
