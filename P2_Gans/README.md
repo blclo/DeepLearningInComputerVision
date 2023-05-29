@@ -60,3 +60,13 @@ By interpolating between the latent codes of two reconstructed real images, you 
 
 ![interpolated_images](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/interpolation.png)
 
+### Applying some pre-trained latent directions to reconstructed images
+Once the w latent vectors of our 'real' images have been obtained, we can always reconstruct them and apply some pre-trained latent directions such as gender, age or smile. This will be done by adding the latent vector to or original w with certain steps to increase the impact. The complete code can be found in the GANS.ipynb
+
+- `w_interp =  w + aging_direction * step`
+
+Some examples can be seen below:
+
+![aging](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/gender_direction.png)
+![gender](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/smile_direction.png)
+![smile](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/aging_direction.png)
