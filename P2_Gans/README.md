@@ -71,13 +71,17 @@ Some examples can be seen below:
 ![gender](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/smile_direction.png)
 ![smile](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/aging_direction.png)
 
+### Learning the latent directions
+I have collected 20 images of people wearing sunglasses and 20 of people without. Afterwards, their latent representations have been learned using the projector.py script. Once done, it is possible to learn the latent direction training an SVM classifier. For this we can use the source code found in the `src` directory.
+
 ### Generating images from text prompt using CLIP
 1. `!git clone https://github.com/vipermu/StyleCLIP`
 2. `%cd StyleCLIP`
 3. Install the requirements: 
 `!pip install git+https://github.com/openai/CLIP.git`
 `!pip install ftfy==5.8 opencv-python==4.5.1.48 regex==2020.11.13 torch==1.7.1 tqdm==4.56.0`
-3. Run the prompt to generate: `!python clip_generate.py --prompt "The image of a blond kid with green eyes"`
+4. Load the `.pt` file (here)[https://github.com/vipermu/StyleCLIP/blob/master/README.md#stylegan-weights]
+5. Run the prompt to generate: `!python clip_generate.py --prompt "The image of a blond kid with green eyes"`
 
 Results below show the iterative process for the image generation:
 ![blond_kid](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/clip_generated_blond_kid.png)
