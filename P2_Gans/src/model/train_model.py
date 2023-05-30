@@ -75,3 +75,6 @@ original_shape = (1, 18, 512)
 # Unflatten the array
 unflattened_array = latent_direction.reshape(original_shape)
 print(unflattened_array.shape)
+
+# Save the array as a file
+np.save('latent_direction_sunglasses.npy', unflattened_array)
