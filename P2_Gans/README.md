@@ -1,5 +1,21 @@
 # Project 2: Understanding Generative Adversarial Networks
-### Setting up your env
+
+## Files Organization
+------------
+
+    ├── README.md          <- The top-level README for developers using this project.
+    ├── images_poster      <- Images of the results
+    ├── src                <- Source code for use in this project.
+    │   └── model           
+    │       └── train_model.py <- Script to train SVM to learn latent direction sunglasses/no_sunglasses 
+    │    
+    ├── Exercise_3.ipynb      <- Example notebook to understand GANs using MNIST
+    │
+    ├── GANS.ipynb   <- Main notebook containing interpolations, reconstructions...
+    └── interpolation.py <- Script example of how the interpolation between two reconstructed images can be done
+
+
+## Setting up your env
 You environment needs to match the required documentation from the https://github.com/NVlabs/stylegan2-ada-pytorch repo.
 1. It is important to load `Python 3.7`, in the HPC you can do:
 - Run `module avail` to see the available Python versions to load
@@ -11,7 +27,7 @@ You environment needs to match the required documentation from the https://githu
 6. In my case I also had to install a specific version of urllib `pip install urllib3==1.26.6`. See https://github.com/NVlabs/stylegan2-ada-pytorch/issues/39 for more info.
 7. Everything should be in place to enjoy creating!
 
-### Generating images from a pretrained GAN model 
+## Generating images from a pretrained GAN model 
 Make sure you have access to the pretrained network. In my case: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/ffhq.pkl
 
 Afterwards you can run - Ex: `python generate.py --outdir=out --trunc=1 --seeds=14,8,33,56 --network=ffql_style.pkl`
@@ -20,7 +36,7 @@ Results look like:
 
 ![generated_images](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/generated_random_faces.png)
 
-### Reconstructing your own images
+## Reconstructing your own images
 To "reconstruct your own images" in the context of StyleGAN2 refers to the process of finding the latent codes or latent vectors that can generate images that closely resemble your input images. In other words, it's about finding the latent representation that, when passed through the generator network of StyleGAN2, produces images that are similar to the provided input images.
 
 To do this, you can start by aligning your images using https://github.com/happy-jihye/FFHQ-Alignment/tree/master/FFHQ-Alignmnet
@@ -39,7 +55,7 @@ Afterwards we will make use of the projector.py script.
 
 ![projected_images](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/result_projector.png)
 
-### Interpolate between two real images you reconstructed
+## Interpolate between two real images you reconstructed
 To interpolate between two real images that you have reconstructed using StyleGAN2, you can follow these steps:
 
 1. Reconstruct the latent codes: Use the "projector.py" script or any other method to obtain the latent codes for the two real images you want to interpolate between. This will give you the latent vectors that represent the respective images in the latent space.
@@ -60,7 +76,7 @@ By interpolating between the latent codes of two reconstructed real images, you 
 
 ![interpolated_images](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/interpolation.png)
 
-### Applying some pre-trained latent directions to reconstructed images
+## Applying some pre-trained latent directions to reconstructed images
 Once the w latent vectors of our 'real' images have been obtained, we can always reconstruct them and apply some pre-trained latent directions such as gender, age or smile. This will be done by adding the latent vector to or original w with certain steps to increase the impact. The complete code can be found in the GANS.ipynb
 
 - `w_interp =  w + aging_direction * step`
@@ -71,10 +87,10 @@ Some examples can be seen below:
 ![gender](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/smile_direction.png)
 ![smile](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/aging_direction.png)
 
-### Learning the latent directions
+## Learning the latent directions
 I have collected 20 images of people wearing sunglasses and 20 of people without. Afterwards, their latent representations have been learned using the projector.py script. Once done, it is possible to learn the latent direction training an SVM classifier. For this we can use the source code found in the `src` directory.
 
-### Generating images from text prompt using CLIP
+## Generating images from text prompt using CLIP
 1. `!git clone https://github.com/vipermu/StyleCLIP`
 2. `%cd StyleCLIP`
 3. Install the requirements: 
