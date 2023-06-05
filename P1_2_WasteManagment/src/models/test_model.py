@@ -17,6 +17,7 @@ import torchvision.transforms as transforms
 from tqdm import trange, tqdm
 from src.models.model import get_model
 from src.models.utils import set_seed, load_experiment
+import json
 
 # Hyperparameters
 batch_size = 12
@@ -44,7 +45,8 @@ transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-path_test = r"/work3/s212725/WasteProject/data/json/test_region_proposals.json"
+paths_to_probs = {}
+path_test = r"/work3/s212725/WasteProject/data/json/new_corrected_test_region_proposals_3.json"
 test_dataset = RegionProposalsDataset(path_test, transform=transform)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
@@ -59,7 +61,11 @@ with torch.no_grad():
 
         # Forward + backward
         outputs = model(images)
+        probs = torch.exp(outputs)
         preds = torch.exp(outputs).topk(1)[1]
+        
+        for path, prob in zip(paths, probs):
+            paths_to_probs[path] = prob.tolist()
 
         # Compute loss
         batch_loss = criterion(outputs, labels)
@@ -76,3 +82,10 @@ with torch.no_grad():
 
     print('Test loss: {:.4f}'.format(avg_test_loss))
     print('Test accuracy: {:.2%}'.format(avg_test_acc))
+    
+# Specify the path for the new JSON file
+output_file_path = "/work3/s212725/WasteProject/data/json/paths_to_probs.json"
+
+# Write the dictionary to a JSON file
+with open(output_file_path, 'w') as file:
+    json.dump(paths_to_probs, file)
