@@ -34,6 +34,12 @@ This style vector is then fed into a synthesis-network which uses a technique ca
 
 ![model](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/model.png)
 
+Due to the presense of artifacts in the activation maps, the model was improved by introducing StyleGAN2 which move the addition of bias and B (noise) outside the are of style. It also changed the instance normalization operation by the demodulation.
+
+-  Demodulation involves dividing the activations of each feature map by their standard deviation. However, normalization normalizes the activations of each feature map by subtracting the mean and dividing by the standard deviation computed for each instance. 
+
+The last improvement introduced, called StyleGAN2-ADA introduces Adaptive Discriminator Augmentation which means augmenting the real images during the discriminator training process. This enhances the training stability and generalization of the model. In addition to augmenting real images, StyleGAN2-ADA applies a technique called "mixing regularization." During training, instead of using only real images or only generated images, a random portion of the mini-batch is selected and replaced with either real or generated images. This mixing of real and generated images further enhances the generalization of the discriminator and helps it learn more robust decision boundaries.
+
 ## Generating images from a pretrained GAN model 
 Make sure you have access to the pretrained network. In my case: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/ffhq.pkl
 
@@ -98,6 +104,10 @@ Some examples can be seen below:
 I have collected 20 images of people wearing sunglasses and 20 of people without. Afterwards, their latent representations have been learned using the projector.py script. Once done, it is possible to learn the latent direction training an SVM classifier. For this we can use the source code found in the `src` directory.
 
 ## Generating images from text prompt using CLIP
+CLIP (Contrastive Language-Image Pretraining) is a neural network model that enables cross-modal understanding between images and text. CLIP is pretrained on a large corpus of publicly available image-text data from the internet. The model learns to encode both images and text into fixed-length representations using a combination of convolutional neural networks (CNNs) for images and transformer models for text.
+
+Contrastive learning is a key aspect of CLIP. During pretraining, CLIP learns to align similar pairs of image-text examples while pushing apart dissimilar pairs. CLIP maps images and text into a shared joint embedding space, where semantically similar images and text are located closer to each other compared to dissimilar pairs. 
+
 1. `!git clone https://github.com/vipermu/StyleCLIP`
 2. `%cd StyleCLIP`
 3. Install the requirements: 
