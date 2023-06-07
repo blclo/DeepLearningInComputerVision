@@ -27,6 +27,13 @@ You environment needs to match the required documentation from the https://githu
 6. In my case I also had to install a specific version of urllib `pip install urllib3==1.26.6`. See https://github.com/NVlabs/stylegan2-ada-pytorch/issues/39 for more info.
 7. Everything should be in place to enjoy creating!
 
+# StyleGAN 
+The main component of the StyleGAN is known as the style-based generator. Here a latent input vector is fed into a mapping network. This network, composed of fully connected layers and non-linear activation functions outputs a intermediate latent space representation, also known as style space. Each dimension in this style-space representation `w` corresponds to an attribute or to an style element. 
+
+This style vector is then fed into a synthesis-network which uses a technique called AdaIN : Adaptive Instance Normalization at each layer to model the normalization parameters (mean and standard deviation) based on the style-vector. These provides specific style-adjustments at different layers of the network. 
+
+![model](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/model.png)
+
 ## Generating images from a pretrained GAN model 
 Make sure you have access to the pretrained network. In my case: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/ffhq.pkl
 
@@ -100,6 +107,11 @@ I have collected 20 images of people wearing sunglasses and 20 of people without
 5. Run the prompt to generate: `!python clip_generate.py --prompt "The image of a blond kid with green eyes"`
 
 Results below show the iterative process for the image generation:
+
 ![blond_kid](https://github.com/blclo/DeepLearningInComputerVision/blob/main/P2_Gans/images_poster/clip_generated_blond_kid.png)
 
 The initialization of the latent code can have an impact on the generated images, although the significance may vary. Conditioning the generation on both an image and a text prompt is possible in some models, but it depends on the specific model's design and capabilities.
+
+In StyleGAN2 ADA, the mapping network (also known as the style network) is responsible for mapping the initial z-space vectors to the intermediate w-space vectors. This mapping is learned during the training process. However, there is no explicit mapping function provided in the model to go back from w-space to z-space.
+
+`z` is required to change the image initialization of the CLIP prompt and thus, inverse mapping must be performed. However, it's important to note that there is no direct, exact inverse mapping from w to z.
