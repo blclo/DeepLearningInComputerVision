@@ -71,3 +71,19 @@ Connection:
 The learning rate and momentum are hyperparameters that control how the optimization algorithm utilizes the gradient information for updating the model parameters. The learning rate determines the step size of parameter updates, while the momentum affects the direction and magnitude of the updates based on the accumulated gradients. Both the learning rate and momentum influence the optimization process, and finding appropriate values for these hyperparameters is crucial for effective model training.
 
 The gradient provides the information about the slope and direction of the loss function with respect to the model parameters. It guides the optimization algorithm to update the parameters in a way that minimizes the loss function. The learning rate scales the gradient to determine the size of parameter updates, while the momentum affects the updates based on the historical gradients. Together, they contribute to the overall optimization process, influencing how the model parameters are adjusted during training to find an optimal solution.
+
+### SGD (Stochastic Gradient Descent):
+SGD is a popular optimization algorithm used to train machine learning models. It updates the model parameters based on the gradient of the loss function with respect to the parameters. In each iteration, SGD computes the gradient using a randomly selected subset of the training data (mini-batch) and updates the parameters in the direction of the negative gradient. Uses a fixed learning rate.
+
+### RMSprop
+Calculates a separate learning rate for each parameter by dividing the current gradient by the root mean square (RMS) of the previous gradients. 
+
+### ADAM (Adaptive Moment Estimation):
+ADAM is a separate optimization algorithm that combines elements from both RMSprop and momentum-based methods. It adapts the learning rate for each parameter based on the first and second moment estimates of the gradients. 
+
+Both use Momentum. SGD uses momentum to incorporate information from previous gradients, allowing for smoother convergence and better escape from local minima. ADAM also employs similar momentum-like variables (first and second moment estimates), but the adaptation of these variables is performed automatically based on the gradients' statistics. The 2 momentum are:
+- the first moment estimate (mean of gradients) 
+- the second moment estimate (uncentered variance of gradients)
+
+Regarding hyperparameter sensitivity: SGD requires careful tuning of the learning rate, which can be a challenging task. ADAM, on the other hand, is less sensitive to the initial learning rate and requires fewer hyperparameter adjustments.
+
