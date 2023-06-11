@@ -6,7 +6,11 @@ deployed in robotic machines that can scan areas and collect and clean beaches, 
 Search.
 2. Finetune a convolutional neural network to classify object proposals.
 3. Apply the model on the test images and implement non-maximum suppresion and Intersection over Union (IoU).
-4. Evaluate the object detection performance using standard metrics
+4. Evaluate the object detection performance using standard metrics - Average Precision.
+
+Results for the project are presented in the poster below:
+
+![Poster P2](https://github.com/blclo/DeepLearningInComputerVision/tree/main/P1_2_WasteManagment/DLCV_CarolinaLopez-2.png)
 
 ### Length of datasets
 - The length of the train dataset is 1050 images and 140638 region proposals, also known as crops.
@@ -14,7 +18,7 @@ Search.
 - The length of the test dataset is 225 images and 23224 region proposals.
 
 ### Results 
-Results in training show an accuracy of 31.93% after including the augmented crops of the ground truth proposals - combating the dataset unbalance. A similar accuracy is obtained through validation - 29.34%. The testing split obtains an accuracy of 90.03%.
+Results in training show an accuracy of 31.93% after including the augmented crops of the ground truth proposals - combating the dataset unbalance. A similar accuracy is obtained through validation - 29.34%. The testing split obtains an accuracy of 95.16%.
 
 For the visual representation of the results it was necessary to display the image together with its ground truth proposals, and the region proposals classifed to have a positive label.
 
@@ -30,6 +34,15 @@ In order to do this a dictionary was included in the **create_rp_dataset.py** fi
 
 This dictionary is created and stored in testing_rp_dict.pkl. It will be later be loaded in the final notebook to print some results. 
 In addition **test_model.py** is saving in **/data/json/test_loop_crops_paths_to_predicted_label.json** the path to the tested crops next to the predicted label.
+
+### Learnings
+Here's something to pay attention to. The bounding boxes for every crop are return of the form `(0, 1, 2, 3)`. However, this bounding box crops the image by doing: `image[crop[1]:crop[3], crop[0]:crop[2]]`
+
+Thus, it is important to display the bounding boxes doing:
+``rect = patches.Rectangle((x, y), w-x, h-y, linewidth=2, edgecolor='r', facecolor='none')`
+
+Instead of doing:
+``rect = patches.Rectangle((x, y), w, h, linewidth=2, edgecolor='r', facecolor='none')``
 
 ## Files Organization
 ------------
