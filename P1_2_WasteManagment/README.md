@@ -39,10 +39,10 @@ In addition **test_model.py** is saving in **/data/json/test_loop_crops_paths_to
 Here's something to pay attention to. The bounding boxes for every crop are return of the form `(0, 1, 2, 3)`. However, this bounding box crops the image by doing: `image[crop[1]:crop[3], crop[0]:crop[2]]`
 
 Thus, it is important to display the bounding boxes doing:
-``rect = patches.Rectangle((x, y), w-x, h-y, linewidth=2, edgecolor='r', facecolor='none')`
+`rect = patches.Rectangle((x, y), w-x, h-y, linewidth=2, edgecolor='r', facecolor='none')`
 
 Instead of doing:
-``rect = patches.Rectangle((x, y), w, h, linewidth=2, edgecolor='r', facecolor='none')``
+`rect = patches.Rectangle((x, y), w, h, linewidth=2, edgecolor='r', facecolor='none')`
 
 ## Files Organization
 ------------
@@ -67,9 +67,11 @@ Instead of doing:
     │   │   ├── dataloader.py   <- Initial dataloader returning the images together with the data from the annotation file in the form a dictionary.
     │   |   └── data_sampler.py <- Given the biased dataset for background crops, the sampler ensures 75% of these per batch.
     │   │
-    │   └── models         <- Scripts to train models
+    │   └── models         <- Scripts to train/test models
     │       │                 
     │       ├── model.py
+    │       ├── test_model.py
+    │       ├── utils.py
     │       └── train_model.py
     │
     └── requirements.txt 
