@@ -40,6 +40,9 @@ Due to the presense of artifacts in the activation maps, the model was improved 
 
 The last improvement introduced, called StyleGAN2-ADA introduces Adaptive Discriminator Augmentation which means augmenting the real images during the discriminator training process. This enhances the training stability and generalization of the model. In addition to augmenting real images, StyleGAN2-ADA applies a technique called "mixing regularization." During training, instead of using only real images or only generated images, a random portion of the mini-batch is selected and replaced with either real or generated images. This mixing of real and generated images further enhances the generalization of the discriminator and helps it learn more robust decision boundaries.
 
+Project results are summerised in the following poster:
+![Project2Results](https://github.com/blclo/DeepLearningInComputerVision/tree/main/P2_Gans/images_poster/DLCV_CarolinaLopez-3.png)
+
 ## Generating images from a pretrained GAN model 
 Make sure you have access to the pretrained network. In my case: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/ffhq.pkl
 
