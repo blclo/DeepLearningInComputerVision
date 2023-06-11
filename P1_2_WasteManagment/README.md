@@ -10,7 +10,7 @@ Search.
 
 Results for the project are presented in the poster below:
 
-![Poster P2](https://github.com/blclo/DeepLearningInComputerVision/tree/main/P1_2_WasteManagment/DLCV_CarolinaLopez-2.png)
+![Poster P2](https://github.com/blclo/DeepLearningInComputerVision/raw/main/P1_2_WasteManagment/DLCV_CarolinaLopez-2.png)
 
 ### Length of datasets
 - The length of the train dataset is 1050 images and 140638 region proposals, also known as crops.
@@ -18,19 +18,19 @@ Results for the project are presented in the poster below:
 - The length of the test dataset is 225 images and 23224 region proposals.
 
 ### Results 
-Results in training show an accuracy of 31.93% after including the augmented crops of the ground truth proposals - combating the dataset unbalance. A similar accuracy is obtained through validation - 29.34%. The testing split obtains an accuracy of 95.16%.
+Results in training show an accuracy of 31.93% after including the augmented crops of the ground truth proposals - combating the dataset unbalance. Given the reduced amount of samples in the testing split, the obtained accuracy reaches 95.16%.
 
-For the visual representation of the results it was necessary to display the image together with its ground truth proposals, and the region proposals classifed to have a positive label.
+For the visual representation of the results, it was necessary to display the image together with its ground truth proposals, and the region proposals classified to have a positive label.
 
 In order to do this a dictionary was included in the **create_rp_dataset.py** file. This dictionary contains the following:
 
-- test_dictionary["image_id"] = [] -> 225 images ids
-- test_dictionary["image_file_name"] = [] -> File names of the 225 images
-- test_dictionary["super_cats"] = [] -> An array of 225 arrays containing inside each the super categories of each images
-- test_dictionary["gt_bboxs"] = [] -> An array of 225 arrays. In each one, the ground truth bounding boxes for each image (out of the 225) are stored.
-- test_dictionary["rp_boxes"] = [] -> An array of 225 arrays, each of the 100 region proposal boxes per image
-- test_dictionary["crop_paths"] = [] -> An array of 225 arrays, each of 100 paths for each of the crops paths
-- test_dictionary["labels_of_crops_in_paths"] = [] -> 225 arrays, each of 100 labels for each of the crops per image
+- `test_dictionary["image_id"] = []` -> 225 images ids
+- `test_dictionary["image_file_name"] = []` -> File names of the 225 images
+- `test_dictionary["super_cats"] = []` -> An array of 225 arrays containing inside each the super categories of each images
+- `test_dictionary["gt_bboxs"] = []` -> An array of 225 arrays. In each one, the ground truth bounding boxes for each image (out of the 225) are stored.
+- `test_dictionary["rp_boxes"] = []` -> An array of 225 arrays, each of the 100 region proposal boxes per image
+- `test_dictionary["crop_paths"] = []` -> An array of 225 arrays, each of 100 paths for each of the crops paths
+- `test_dictionary["labels_of_crops_in_paths"] = []` -> 225 arrays, each of 100 labels for each of the crops per image
 
 This dictionary is created and stored in testing_rp_dict.pkl. It will be later be loaded in the final notebook to print some results. 
 In addition **test_model.py** is saving in **/data/json/test_loop_crops_paths_to_predicted_label.json** the path to the tested crops next to the predicted label.
