@@ -42,7 +42,8 @@ The last improvement introduced, called StyleGAN2-ADA introduces Adaptive Discri
 
 Project results are summerised in the following poster:
 
-![project2Results](https://github.com/blclo/DeepLearningInComputerVision/tree/main/P2_Gans/images_poster/DLCV_CarolinaLopez-3.png)
+![project2Results](https://github.com/blclo/DeepLearningInComputerVision/raw/main/P2_Gans/images_poster/DLCV_CarolinaLopez-3.png)
+
 
 ## Generating images from a pretrained GAN model 
 Make sure you have access to the pretrained network. In my case: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/ffhq.pkl
